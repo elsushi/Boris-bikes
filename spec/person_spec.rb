@@ -1,4 +1,4 @@
-require './person'
+require 'person'
 
 describe Person do
 let(:person) {Person.new}
@@ -32,6 +32,21 @@ let(:person) {Person.new}
 		person.rent_bike_from station
 		expect(person).to have_bike
 	end
+
+	it 'returns his bike to the station' do
+		bike = :bike
+		person = Person.new bike
+		station = double :station
+		expect(station).to receive(:dock).with(:bike)
+		person.return_bike_to station
+	end
+	it 'has no bike after returning it' do
+		person = Person.new :bike
+		station = double :station, dock: nil
+		person.return_bike_to station
+		expect(person).not_to have_bike
+		end 
+
 
 end
 
