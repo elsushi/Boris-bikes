@@ -15,8 +15,8 @@ class DockingStation
 		@bikes << bike
 	end
 
-	def release bike
-		@bikes.delete bike
+	def release
+		@bikes.delete(available_bikes.first)
 	end
 	def full?
 		bike_count == @capacity
@@ -24,6 +24,11 @@ class DockingStation
 	def available_bikes
 		@bikes.reject {|bike| bike.broken?}
 	end
-	
+	def unavailable_bikes
+		@bikes.select {|bike| bike.broken?}
+	end
+	def release_broken_bikes
+		@bikes.delete(unavailable_bikes.first)
+	end
 
 end

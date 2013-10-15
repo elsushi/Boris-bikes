@@ -5,7 +5,8 @@ require 'docking_station'
 describe DockingStation do 
 
 	let (:station) {DockingStation.new(:capacity => 20)}
-	let (:bike) {Bike.new}
+	let (:bike) { double :bike, broken?: false}
+	let (:broken_bike) { double :bike, broken?: true}
 
 	def fill_station(station)
 		20.times {station.dock(Bike.new)}
@@ -16,9 +17,9 @@ describe DockingStation do
 		station.dock(bike)
 		expect(station.bike_count).to eq 1
 	end
-	it 'should release a bike' do
+	it 'should release a working bike to a person' do
 		station.dock(bike)
-		station.release(bike)
+		station.release
 		expect(station.bike_count).to eq 0
 	end
 	it 'should know when it is full' do
@@ -31,11 +32,25 @@ describe DockingStation do
 		expect(lambda {station.dock(bike)}).to raise_error(RuntimeError)
 	end
 	it 'should provide the list of available bikes' do
+		
+		station.dock(bike)
+		station.dock(broken_bike)
+		expect(station.available_bikes).to eq ([bike])
+	end
+
+	it 'should provide the list of unavailable bikes' do
 		working_bike, broken_bike = Bike.new, Bike.new
 		broken_bike.break
 		station.dock(working_bike)
 		station.dock(broken_bike)
-		expect(station.available_bikes).to eq ([working_bike])
+		expect(station.unavailable_bikes).to eq ([broken_bike])
 	end
 
+	it 'should release broken bikes to the van' do
+		station.dock(broken_bike)
+		station.release_broken_bikes
+		expect(station.bike_count).to eq 0 
+	end
+
+	
 end
