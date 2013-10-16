@@ -49,7 +49,7 @@ describe DockingStation do
 	it 'should release broken bikes to the van' do
 		station.dock(broken_bike)
 		station.release_broken_bikes
-		expect(station.bike_count).to eq 0 
+		expect(station.bike_count).to eq 0 #comment
 	end
 
 	
